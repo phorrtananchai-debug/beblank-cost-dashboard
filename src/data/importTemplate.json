@@ -1,0 +1,70 @@
+{
+  "id": "brand-branch-rev01",
+  "projectName": "",
+  "brand": "",
+  "branch": "",
+  "revision": "REV01",
+  "status": "Data pending review",
+  "currentBudget": null,
+  "previousBudget": null,
+  "deltaAmount": null,
+  "deltaPercent": null,
+  "lastUpdated": null,
+  "areaSqm": null,
+  "scopeCompleteness": "",
+  "hiddenCostRisk": "",
+  "ownerSupplyCount": null,
+  "negotiationPriority": "",
+  "costBreakdown": [
+    {
+      "name": "Architectural",
+      "value": null,
+      "color": "#1c1917"
+    },
+    {
+      "name": "Electrical",
+      "value": null,
+      "color": "#64748b"
+    },
+    {
+      "name": "AC",
+      "value": null,
+      "color": "#7c6f5f"
+    },
+    {
+      "name": "Water System",
+      "value": null,
+      "color": "#b08968"
+    }
+  ],
+  "revisionDelta": {
+    "items": [
+      {
+        "label": "Architectural",
+        "value": null
+      }
+    ],
+    "notes": []
+  },
+  "risks": [
+    {
+      "title": "",
+      "detail": "",
+      "level": "",
+      "ownerVisible": true
+    }
+  ],
+  "negotiationChecklist": [
+    {
+      "label": "",
+      "ownerVisible": true
+    }
+  ],
+  "ownerSupplyItems": [],
+  "ownerSummary": "",
+  "internalNotes": {
+    "overpricedItems": [],
+    "contractorAnalysis": "",
+    "negotiationNotes": []
+  }
+}
