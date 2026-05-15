@@ -101,11 +101,11 @@ function ProjectSelector({ selectedProjectId, onChange, onToggleImportGuide }) {
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end">
           <button
             type="button"
             onClick={onToggleImportGuide}
-            className="rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-700 shadow-sm transition hover:bg-stone-100"
+            className="min-h-11 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 shadow-sm shadow-stone-200/60 transition duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:bg-stone-50"
           >
             คู่มือนำเข้าข้อมูล
           </button>
@@ -114,7 +114,7 @@ function ProjectSelector({ selectedProjectId, onChange, onToggleImportGuide }) {
             <select
               value={selectedProjectId}
               onChange={(event) => onChange(event.target.value)}
-              className="min-w-72 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-950 shadow-sm outline-none transition focus:border-stone-400"
+              className="min-h-11 w-full min-w-0 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-950 shadow-sm outline-none transition focus:border-stone-400 sm:min-w-72"
             >
               {projects.map((project) => (
                 <option key={project.id} value={project.id}>
@@ -172,17 +172,17 @@ function ImportGuidePanel() {
 
 function ModeToggle({ mode, onChange }) {
   return (
-    <div className="flex rounded-xl border border-stone-200 bg-stone-100 p-1">
+    <div className="flex w-full flex-wrap gap-2 rounded-2xl border border-stone-200 bg-white/90 p-1.5 shadow-sm shadow-stone-200/60 sm:w-auto">
       {modeOptions.map((item) => (
         <button
           key={item.value}
           type="button"
           onClick={() => onChange(item.value)}
           className={[
-            'rounded-lg px-3 py-2 text-sm font-semibold transition',
+            'min-h-11 min-w-[9rem] flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium leading-5 transition duration-200 sm:flex-none',
             mode === item.value
-              ? 'bg-white text-stone-950 shadow-sm'
-              : 'text-stone-500 hover:text-stone-950',
+              ? 'border-stone-950 bg-stone-950 text-white shadow-sm shadow-stone-300/70'
+              : 'border-stone-200 bg-white text-stone-800 hover:-translate-y-0.5 hover:border-stone-300 hover:bg-stone-50 hover:shadow-sm',
           ].join(' ')}
         >
           {item.label}
@@ -503,7 +503,7 @@ function ProjectDetail({ project }) {
           eyebrow="โหมดการดูข้อมูล"
           title={isInternalView ? 'บันทึกวิเคราะห์ภายใน' : 'สรุปสำหรับเจ้าของ'}
           action={
-            <div className="flex rounded-xl border border-stone-200 bg-stone-100 p-1">
+            <div className="flex w-full flex-wrap gap-2 rounded-2xl border border-stone-200 bg-white/90 p-1.5 shadow-sm shadow-stone-200/60 sm:w-auto">
               {[
                 ['มุมมองเจ้าของ', false],
                 ['มุมมองภายใน', true],
@@ -513,10 +513,10 @@ function ProjectDetail({ project }) {
                   type="button"
                   onClick={() => setIsInternalView(value)}
                   className={[
-                    'rounded-lg px-3 py-2 text-sm font-semibold transition',
+                    'min-h-11 min-w-[8.75rem] flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium leading-5 transition duration-200 sm:flex-none',
                     isInternalView === value
-                      ? 'bg-white text-stone-950 shadow-sm'
-                      : 'text-stone-500 hover:text-stone-950',
+                      ? 'border-stone-950 bg-stone-950 text-white shadow-sm shadow-stone-300/70'
+                      : 'border-stone-200 bg-white text-stone-800 hover:-translate-y-0.5 hover:border-stone-300 hover:bg-stone-50 hover:shadow-sm',
                   ].join(' ')}
                 >
                   {label}

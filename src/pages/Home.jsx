@@ -1,5 +1,31 @@
 import { Link } from 'react-router-dom'
 
+function ActionIcon({ name }) {
+  const paths = {
+    file: (
+      <path d="M7 3.5h7l3 3V20.5H7V3.5Zm7 0V7h3M9.5 11h5M9.5 14.5h5M9.5 18h3" />
+    ),
+    clipboard: (
+      <path d="M9 4.5h6M9.5 3h5l.5 2H9l.5-2ZM7 5h10v16H7V5Zm3 7h4M10 16h3" />
+    ),
+  }
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      {paths[name]}
+    </svg>
+  )
+}
+
 const highlights = [
   {
     label: 'โครงการ',
@@ -34,17 +60,19 @@ function Home() {
             และสิ่งที่ต้องตัดสินใจก่อนอนุมัติ เริ่มจาก Karun Phuket Old Town
             REV01
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               to="/cost-dashboard"
-              className="inline-flex justify-center rounded-lg bg-stone-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-800"
+              className="inline-flex min-h-11 min-w-[9rem] items-center justify-center gap-2 rounded-xl border border-stone-950 bg-stone-950 px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-stone-300/70 transition duration-200 hover:-translate-y-0.5 hover:bg-stone-800"
             >
+              <ActionIcon name="file" />
               เปิดรีวิว REV01
             </Link>
             <a
               href="#overview"
-              className="inline-flex justify-center rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100"
+              className="inline-flex min-h-11 min-w-[9rem] items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 shadow-sm shadow-stone-200/60 transition duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:bg-stone-50"
             >
+              <ActionIcon name="clipboard" />
               สรุปรีวิว
             </a>
           </div>
