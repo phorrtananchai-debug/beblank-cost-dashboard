@@ -5,6 +5,12 @@ import MetricCard from '../components/MetricCard.jsx'
 import RiskCard from '../components/RiskCard.jsx'
 import SectionCard from '../components/SectionCard.jsx'
 import { projects } from '../data/projects.js'
+import { aiImportMappingGuide, boqProjectSchemaExample } from '../data/schemaExample.js'
+import { warnForInvalidProjects } from '../utils/validateProjectData.js'
+
+if (import.meta.env.DEV) {
+  warnForInvalidProjects(projects)
+}
 
 const currency = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -54,7 +60,7 @@ function EmptyState() {
   )
 }
 
-function ProjectSelector({ selectedProjectId, onChange }) {
+function ProjectSelector({ selectedProjectId, onChange, onToggleImportGuide }) {
   return (
     <SectionCard>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
@@ -71,20 +77,70 @@ function ProjectSelector({ selectedProjectId, onChange }) {
           </p>
         </div>
 
-        <label className="flex flex-col gap-2 text-sm font-medium text-stone-600">
-          Selected project
-          <select
-            value={selectedProjectId}
-            onChange={(event) => onChange(event.target.value)}
-            className="min-w-72 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-950 shadow-sm outline-none transition focus:border-stone-400"
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <button
+            type="button"
+            onClick={onToggleImportGuide}
+            className="rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-700 shadow-sm transition hover:bg-stone-100"
           >
-            {projects.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.projectName} {project.revision}
-              </option>
+            Import Guide
+          </button>
+          <label className="flex flex-col gap-2 text-sm font-medium text-stone-600">
+            Selected project
+            <select
+              value={selectedProjectId}
+              onChange={(event) => onChange(event.target.value)}
+              className="min-w-72 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-950 shadow-sm outline-none transition focus:border-stone-400"
+            >
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.projectName} {project.revision}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </div>
+    </SectionCard>
+  )
+}
+
+function ImportGuidePanel() {
+  const requiredFields = Object.keys(boqProjectSchemaExample)
+
+  return (
+    <SectionCard eyebrow="Import Guide" title="Static AI JSON workflow">
+      <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
+          <h2 className="text-sm font-semibold text-stone-950">
+            Required project fields
+          </h2>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {requiredFields.map((field) => (
+              <span
+                key={field}
+                className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-semibold text-stone-600"
+              >
+                {field}
+              </span>
             ))}
-          </select>
-        </label>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
+          <h2 className="text-sm font-semibold text-stone-950">
+            Mapping notes for AI output
+          </h2>
+          <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
+            {aiImportMappingGuide.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <p className="mt-4 text-sm text-stone-500">
+            Full workflow: docs/IMPORT_WORKFLOW.md. Blank template:
+            src/data/importTemplate.json.
+          </p>
+        </div>
       </div>
     </SectionCard>
   )
@@ -490,6 +546,7 @@ function ProjectDetail({ project }) {
 function CostDashboard() {
   const [selectedProjectId, setSelectedProjectId] = useState(projects[0].id)
   const [mode, setMode] = useState('Portfolio Overview')
+  const [showImportGuide, setShowImportGuide] = useState(false)
   const selectedProject =
     projects.find((project) => project.id === selectedProjectId) ?? projects[0]
 
@@ -530,7 +587,10 @@ function CostDashboard() {
       <ProjectSelector
         selectedProjectId={selectedProjectId}
         onChange={setSelectedProjectId}
+        onToggleImportGuide={() => setShowImportGuide((current) => !current)}
       />
+
+      {showImportGuide && <ImportGuidePanel />}
 
       <div className="flex justify-start">
         <ModeToggle mode={mode} onChange={setMode} />
