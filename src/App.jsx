@@ -1,12 +1,24 @@
+import { lazy, Suspense } from 'react'
 import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import Home from './pages/Home.jsx'
-import CostDashboard from './pages/CostDashboard.jsx'
-import OwnerPresentation from './pages/OwnerPresentation.jsx'
+
+const Home = lazy(() => import('./pages/Home.jsx'))
+const CostDashboard = lazy(() => import('./pages/CostDashboard.jsx'))
+const OwnerPresentation = lazy(() => import('./pages/OwnerPresentation.jsx'))
 
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/cost-dashboard', label: 'REV01 Review' },
 ]
+
+function LoadingPage() {
+  return (
+    <div className="grid min-h-[50vh] place-items-center">
+      <div className="rounded-2xl border border-stone-200 bg-white px-5 py-4 text-sm font-medium text-stone-500 shadow-sm shadow-stone-200/60">
+        Loading dashboard
+      </div>
+    </div>
+  )
+}
 
 function App() {
   const location = useLocation()
@@ -63,12 +75,14 @@ function App() {
           isOwnerPage ? 'max-w-none bg-white' : 'max-w-7xl',
         ].join(' ')}
       >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/cost-dashboard" element={<CostDashboard />} />
-          <Route path="/owner/:projectId" element={<OwnerPresentation />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<LoadingPage />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cost-dashboard" element={<CostDashboard />} />
+            <Route path="/owner/:projectId" element={<OwnerPresentation />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   )

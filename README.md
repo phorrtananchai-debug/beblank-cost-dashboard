@@ -1,16 +1,71 @@
-# React + Vite
+# BOQ Intelligence Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A static React + Vite dashboard for BOQ review, multi-project quotation intelligence, and owner-safe presentation pages.
 
-Currently, two official plugins are available:
+## Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm.cmd install
+npm.cmd run dev
+```
 
-## React Compiler
+Open `http://127.0.0.1:5173`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Production Checks
 
-## Expanding the ESLint configuration
+```bash
+npm.cmd run lint
+npm.cmd run build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Vite writes the production output to `dist/`.
+
+## Vercel Deployment
+
+Recommended Vercel settings:
+
+- Framework Preset: `Vite`
+- Build Command: `npm.cmd run build` locally, or `npm run build` in Vercel
+- Output Directory: `dist`
+- Install Command: `npm install`
+
+This repo includes `vercel.json` with an SPA rewrite to `index.html`, so direct refreshes on routes like `/owner/karun-phuket-old-town-rev01` work correctly after deployment.
+
+## Owner Presentation Routes
+
+Owner-safe pages are available at:
+
+```text
+/owner/:projectId
+```
+
+Example:
+
+```text
+/owner/karun-phuket-old-town-rev01
+```
+
+## Future Firebase Environment
+
+Firebase is not implemented yet. `.env.example` reserves Vite client-side Firebase variables for future work:
+
+```bash
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+Do not put Firebase Admin SDK credentials or service account keys in Vite environment variables.
+
+## Static Data Import
+
+New BOQ projects are currently added as static data in `src/data/projects.js`.
+
+See:
+
+- `docs/IMPORT_WORKFLOW.md`
+- `src/data/importTemplate.json`
+ 
