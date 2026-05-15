@@ -34,42 +34,42 @@ export const projects = [
     },
     risks: [
       {
-        title: 'PEA expansion excluded',
-        detail: 'Potential authority-side expansion work is outside the current BOQ.',
-        level: 'External cost',
+        title: 'ยังไม่รวมงานขยายเขต PEA',
+        detail: 'งานที่เกี่ยวข้องกับการไฟฟ้าอาจมีค่าใช้จ่ายเพิ่มเติมนอก BOQ ปัจจุบัน',
+        level: 'ค่าใช้จ่ายภายนอก',
         ownerVisible: true,
       },
       {
-        title: 'Communication main excluded',
-        detail: 'Main communication line scope remains outside contractor pricing.',
-        level: 'Scope gap',
+        title: 'ยังไม่รวมระบบสื่อสารหลัก',
+        detail: 'งานเดินระบบสื่อสารหลักยังอยู่นอกขอบเขตราคาผู้รับเหมา',
+        level: 'ขอบเขตงานยังไม่ครบ',
         ownerVisible: true,
       },
       {
-        title: 'Chandelier by owner',
+        title: 'โคม Chandelier จัดหาโดยเจ้าของ',
         detail:
-          'Owner supply item should be tracked for procurement timing and install readiness.',
-        level: 'Owner supply',
+          'ควรยืนยันกำหนดจัดซื้อและความพร้อมติดตั้ง เพื่อไม่ให้กระทบหน้างาน',
+        level: 'เจ้าของจัดหา',
         ownerVisible: true,
       },
       {
-        title: 'Possible condenser support structure cost',
+        title: 'อาจมีค่าโครงสร้างรองรับคอนเดนซิ่ง',
         detail:
-          'AC support structure may require a separate allowance after site confirmation.',
-        level: 'Hidden cost',
+          'งานรองรับเครื่องปรับอากาศอาจต้องประเมินเพิ่มเติมหลังตรวจหน้างาน',
+        level: 'ความเสี่ยงต้นทุนแฝง',
         ownerVisible: true,
       },
     ],
     negotiationChecklist: [
-      { label: 'Confirm AC model/spec', ownerVisible: true },
-      { label: 'Request water system breakdown', ownerVisible: true },
-      { label: 'Confirm Lux level', ownerVisible: true },
-      { label: 'Confirm BTU performance', ownerVisible: true },
-      { label: 'Confirm owner supply items', ownerVisible: true },
+      { label: 'ยืนยันรุ่นและสเปกเครื่องปรับอากาศ', ownerVisible: true },
+      { label: 'ขอรายละเอียดแยกรายการระบบน้ำ', ownerVisible: true },
+      { label: 'ยืนยันระดับความสว่าง Lux', ownerVisible: true },
+      { label: 'ยืนยันประสิทธิภาพ BTU', ownerVisible: true },
+      { label: 'ยืนยันรายการที่เจ้าของจัดหาเอง', ownerVisible: true },
     ],
-    ownerSupplyItems: ['Chandelier by owner'],
+    ownerSupplyItems: ['โคม Chandelier จัดหาโดยเจ้าของ'],
     ownerSummary:
-      'REV01 Review sets the current BOQ budget at THB 1,320,000, reduced by THB 77,000 from the previous issue. The owner decision should focus on confirming AC specification, water system detail, lighting level, and owner-supplied chandelier responsibility before final sign-off.',
+      'รีวิว REV01 สรุปงบ BOQ ปัจจุบันที่ THB 1,320,000 ลดลง THB 77,000 จากรอบก่อน จุดที่ควรยืนยันก่อนอนุมัติคือสเปกเครื่องปรับอากาศ รายละเอียดระบบน้ำ ระดับแสงสว่าง และรายการโคม Chandelier ที่เจ้าของเป็นผู้จัดหา',
     internalNotes: {
       overpricedItems: [
         'Water system increase needs itemized labor and equipment validation.',

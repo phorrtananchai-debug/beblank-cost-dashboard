@@ -36,9 +36,26 @@ const tooltipStyle = {
 }
 
 const formatMoney = (value, precise = false) => {
-  if (typeof value !== 'number') return 'Data pending review'
+  if (typeof value !== 'number') return 'รอตรวจสอบข้อมูล'
   return precise ? preciseCurrency.format(value) : currency.format(value)
 }
+
+const riskLabel = {
+  High: 'สูง',
+  Medium: 'ปานกลาง',
+  Low: 'ต่ำ',
+}
+
+const statusLabel = {
+  Review: 'กำลังรีวิว',
+  Approved: 'อนุมัติแล้ว',
+  'Data pending review': 'รอตรวจสอบข้อมูล',
+}
+
+const modeOptions = [
+  { value: 'Portfolio Overview', label: 'ภาพรวมทั้งหมด' },
+  { value: 'Project Detail', label: 'รายละเอียดโครงการ' },
+]
 
 const hasProjectDetail = (project) =>
   typeof project.currentBudget === 'number' &&
@@ -55,13 +72,13 @@ const getRevisionStatus = (project) =>
 
 function EmptyState() {
   return (
-    <SectionCard eyebrow="Project Detail" title="Data pending review">
+    <SectionCard eyebrow="รายละเอียดโครงการ" title="รอตรวจสอบข้อมูล">
       <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
-        <p className="text-lg font-semibold text-stone-950">Data pending review</p>
+        <p className="text-lg font-semibold text-stone-950">รอตรวจสอบข้อมูล</p>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-stone-500">
-          This project shell is ready for a future BOQ import. Once the budget,
-          cost categories, revision deltas, risks, and checklist are mapped into
-          the project schema, the full intelligence view will appear here.
+          โครงการนี้พร้อมรองรับข้อมูล BOQ รอบถัดไป เมื่อนำเข้างบประมาณ
+          หมวดต้นทุน ส่วนต่างรอบรีวิว ความเสี่ยง และรายการตรวจสอบครบแล้ว
+          ระบบจะแสดงรายละเอียดทั้งหมดในหน้านี้
         </p>
       </div>
     </SectionCard>
@@ -74,14 +91,13 @@ function ProjectSelector({ selectedProjectId, onChange, onToggleImportGuide }) {
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
-            Project Library
+            ฐานข้อมูลโครงการ
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-            BOQ intelligence system
+            ระบบวิเคราะห์ BOQ
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
-            Compare project health at portfolio level, then open a revision for
-            owner-safe decisions and internal negotiation strategy.
+            เปรียบเทียบภาพรวมต้นทุน ความเสี่ยง และรายการที่ต้องตัดสินใจก่อนอนุมัติงาน
           </p>
         </div>
 
@@ -91,10 +107,10 @@ function ProjectSelector({ selectedProjectId, onChange, onToggleImportGuide }) {
             onClick={onToggleImportGuide}
             className="rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-700 shadow-sm transition hover:bg-stone-100"
           >
-            Import Guide
+            คู่มือนำเข้าข้อมูล
           </button>
           <label className="flex flex-col gap-2 text-sm font-medium text-stone-600">
-            Selected project
+            เลือกโครงการ
             <select
               value={selectedProjectId}
               onChange={(event) => onChange(event.target.value)}
@@ -117,11 +133,11 @@ function ImportGuidePanel() {
   const requiredFields = Object.keys(boqProjectSchemaExample)
 
   return (
-    <SectionCard eyebrow="Import Guide" title="Static AI JSON workflow">
+    <SectionCard eyebrow="คู่มือนำเข้าข้อมูล" title="โครงสร้าง JSON สำหรับ AI">
       <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
           <h2 className="text-sm font-semibold text-stone-950">
-            Required project fields
+            ฟิลด์ที่ต้องมี
           </h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {requiredFields.map((field) => (
@@ -137,7 +153,7 @@ function ImportGuidePanel() {
 
         <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
           <h2 className="text-sm font-semibold text-stone-950">
-            Mapping notes for AI output
+            แนวทาง mapping ข้อมูลจาก AI
           </h2>
           <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
             {aiImportMappingGuide.map((item) => (
@@ -145,8 +161,8 @@ function ImportGuidePanel() {
             ))}
           </ul>
           <p className="mt-4 text-sm text-stone-500">
-            Full workflow: docs/IMPORT_WORKFLOW.md. Blank template:
-            src/data/importTemplate.json.
+            ดู workflow เต็มได้ที่ docs/IMPORT_WORKFLOW.md และใช้ template
+            เริ่มต้นที่ src/data/importTemplate.json
           </p>
         </div>
       </div>
@@ -157,19 +173,19 @@ function ImportGuidePanel() {
 function ModeToggle({ mode, onChange }) {
   return (
     <div className="flex rounded-xl border border-stone-200 bg-stone-100 p-1">
-      {['Portfolio Overview', 'Project Detail'].map((label) => (
+      {modeOptions.map((item) => (
         <button
-          key={label}
+          key={item.value}
           type="button"
-          onClick={() => onChange(label)}
+          onClick={() => onChange(item.value)}
           className={[
             'rounded-lg px-3 py-2 text-sm font-semibold transition',
-            mode === label
+            mode === item.value
               ? 'bg-white text-stone-950 shadow-sm'
               : 'text-stone-500 hover:text-stone-950',
           ].join(' ')}
         >
-          {label}
+          {item.label}
         </button>
       ))}
     </div>
@@ -180,26 +196,29 @@ function PortfolioOverview({ portfolio, selectedProjectId, onSelectProject }) {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Total Projects" value={portfolio.totalProjects} />
+        <MetricCard label="จำนวนโครงการ" value={portfolio.totalProjects} />
         <MetricCard
-          label="Total Budget"
+          label="งบรวม"
           value={formatMoney(portfolio.totalBudget)}
-          detail="Projects with reviewed budget data"
+          detail="เฉพาะโครงการที่มีงบผ่านการตรวจสอบ"
         />
         <MetricCard
-          label="Avg. Cost / SQM"
+          label="ต้นทุนเฉลี่ย / ตร.ม."
           value={formatMoney(portfolio.averageCostPerSqm)}
-          detail="Only projects with area data included"
+          detail="คำนวณจากโครงการที่มีข้อมูลพื้นที่"
         />
         <MetricCard
-          label="Highest Risk Project"
-          value={portfolio.highestRiskProject?.projectName ?? 'Data pending review'}
-          detail={portfolio.highestRiskProject?.hiddenCostRisk ?? 'No reviewed risk data'}
+          label="โครงการที่ต้องระวังที่สุด"
+          value={portfolio.highestRiskProject?.projectName ?? 'รอตรวจสอบข้อมูล'}
+          detail={
+            riskLabel[portfolio.highestRiskProject?.hiddenCostRisk] ??
+            'ยังไม่มีข้อมูลความเสี่ยง'
+          }
           tone="risk"
         />
       </div>
 
-      <SectionCard eyebrow="Portfolio" title="Project cards">
+      <SectionCard eyebrow="ภาพรวมทั้งหมด" title="การ์ดโครงการ">
         <div className="grid gap-4 lg:grid-cols-3">
           {projects.map((project) => {
             const isSelected = project.id === selectedProjectId
@@ -232,19 +251,23 @@ function PortfolioOverview({ portfolio, selectedProjectId, onSelectProject }) {
                 </div>
                 <div className="mt-5 space-y-2 text-sm">
                   <div className="flex justify-between gap-3">
-                    <span className="text-stone-500">Status</span>
-                    <span className="font-medium text-stone-800">{project.status}</span>
+                    <span className="text-stone-500">สถานะ</span>
+                    <span className="font-medium text-stone-800">
+                      {statusLabel[project.status] ?? project.status}
+                    </span>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <span className="text-stone-500">Budget</span>
+                    <span className="text-stone-500">งบประมาณ</span>
                     <span className="font-medium text-stone-800">
                       {formatMoney(project.currentBudget)}
                     </span>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <span className="text-stone-500">Risk</span>
+                    <span className="text-stone-500">ความเสี่ยง</span>
                     <span className="font-medium text-stone-800">
-                      {isPending ? 'Data pending review' : project.hiddenCostRisk}
+                      {isPending
+                        ? 'รอตรวจสอบข้อมูล'
+                        : riskLabel[project.hiddenCostRisk] ?? project.hiddenCostRisk}
                     </span>
                   </div>
                 </div>
@@ -286,36 +309,36 @@ function ProjectDetail({ project }) {
 
   const metrics = [
     {
-      label: 'Current Budget',
+      label: 'งบประมาณปัจจุบัน',
       value: formatMoney(project.currentBudget, true),
-      detail: `${project.revision} submitted budget`,
+      detail: `งบที่ส่งมาในรอบ ${project.revision}`,
     },
     {
-      label: 'Cost Reduction',
+      label: 'งบที่ลดลง',
       value: formatMoney(costReduction, true),
-      detail: `${percentFormatter.format(Math.abs(project.deltaPercent ?? 0))}% from previous issue`,
+      detail: `ลดลง ${percentFormatter.format(Math.abs(project.deltaPercent ?? 0))}% จากรอบก่อน`,
       tone: 'positive',
     },
     {
-      label: 'Scope Completeness',
-      value: project.scopeCompleteness ?? 'Data pending review',
-      detail: 'Exclusions still require owner clarity',
+      label: 'ความครบถ้วนของขอบเขต',
+      value: project.scopeCompleteness ?? 'รอตรวจสอบข้อมูล',
+      detail: 'ยังมีรายการยกเว้นที่ควรยืนยันกับเจ้าของ',
     },
     {
-      label: 'Hidden Cost Risk',
-      value: project.hiddenCostRisk ?? 'Data pending review',
-      detail: 'Driven by excluded utilities and support works',
+      label: 'ความเสี่ยงต้นทุนแฝง',
+      value: riskLabel[project.hiddenCostRisk] ?? project.hiddenCostRisk ?? 'รอตรวจสอบข้อมูล',
+      detail: 'เกิดจากงานระบบและงานรองรับที่ยังไม่รวมในราคา',
       tone: 'risk',
     },
     {
-      label: 'Owner Supply Count',
-      value: project.ownerSupplyCount ?? 'Data pending review',
-      detail: 'Owner-procured scope requiring tracking',
+      label: 'รายการที่เจ้าของจัดหา',
+      value: project.ownerSupplyCount ?? 'รอตรวจสอบข้อมูล',
+      detail: 'รายการที่ต้องติดตามการจัดซื้อจากเจ้าของ',
     },
     {
-      label: 'Negotiation Priority',
-      value: project.negotiationPriority ?? 'Data pending review',
-      detail: 'Clarify scope before approval',
+      label: 'ความสำคัญในการต่อรอง',
+      value: project.negotiationPriority === 'High' ? 'สูง' : project.negotiationPriority,
+      detail: 'ควรเคลียร์ขอบเขตก่อนอนุมัติ',
       tone: 'risk',
     },
   ]
@@ -326,26 +349,25 @@ function ProjectDetail({ project }) {
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
-              Architectural Project Intelligence
+              ระบบวิเคราะห์ BOQ
             </p>
             <h2 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
               {project.projectName}
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-stone-600">
-              {getRevisionStatus(project)} turns the BOQ into a concise owner
-              decision view: what changed, where risk remains, and what to
-              negotiate next.
+              {getRevisionStatus(project)} สรุป BOQ ให้เห็นงบที่เปลี่ยน
+              ความเสี่ยงที่ยังต้องยืนยัน และประเด็นที่ควรตัดสินใจก่อนอนุมัติ
             </p>
           </div>
 
           <div className="grid gap-3 rounded-2xl border border-stone-200 bg-[#f7f5ef] p-4">
             {[
-              ['Project Name', project.projectName],
-              ['Revision Status', getRevisionStatus(project)],
-              ['Current Budget', formatMoney(project.currentBudget, true)],
-              ['Previous Budget', formatMoney(project.previousBudget, true)],
-              ['Budget Delta', formatMoney(project.deltaAmount, true)],
-              ['Last Updated', project.lastUpdated ?? 'Data pending review'],
+              ['ชื่อโครงการ', project.projectName],
+              ['สถานะรีวิว', getRevisionStatus(project)],
+              ['งบประมาณปัจจุบัน', formatMoney(project.currentBudget, true)],
+              ['งบประมาณรอบก่อน', formatMoney(project.previousBudget, true)],
+              ['ส่วนต่างงบ', formatMoney(project.deltaAmount, true)],
+              ['อัปเดตล่าสุด', project.lastUpdated ?? 'รอตรวจสอบข้อมูล'],
             ].map(([label, value]) => (
               <div
                 key={label}
@@ -369,8 +391,8 @@ function ProjectDetail({ project }) {
 
       <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
         <SectionCard
-          eyebrow="Cost Breakdown"
-          title={`${project.revision} package allocation`}
+          eyebrow="แยกหมวดต้นทุน"
+          title={`สัดส่วนงบ ${project.revision}`}
           action={
             <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
               THB
@@ -423,7 +445,7 @@ function ProjectDetail({ project }) {
           </div>
         </SectionCard>
 
-        <SectionCard eyebrow="Revision Delta" title="What moved from prior issue">
+        <SectionCard eyebrow="ส่วนต่างรอบรีวิว" title="รายการที่เปลี่ยนจากรอบก่อน">
           <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4">
             {project.revisionDelta.items.map((delta) => (
               <DeltaRow key={delta.label} {...delta} />
@@ -437,7 +459,7 @@ function ProjectDetail({ project }) {
         </SectionCard>
       </div>
 
-      <SectionCard eyebrow="Risk Alerts" title="Owner clarity required">
+      <SectionCard eyebrow="รายการความเสี่ยง" title="ประเด็นที่ควรยืนยันกับเจ้าของ">
         <div className="grid gap-4 md:grid-cols-2">
           {project.risks.map((risk) => (
             <RiskCard key={risk.title} {...risk} />
@@ -446,7 +468,7 @@ function ProjectDetail({ project }) {
       </SectionCard>
 
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <SectionCard eyebrow="Negotiation Checklist" title="Next confirmations">
+        <SectionCard eyebrow="รายการตรวจสอบ" title="สิ่งที่ควรยืนยันต่อไป">
           <div className="space-y-3">
             {project.negotiationChecklist.map((item, index) => {
               const isChecked = checkedItems.includes(index)
@@ -478,13 +500,13 @@ function ProjectDetail({ project }) {
         </SectionCard>
 
         <SectionCard
-          eyebrow="View Mode"
-          title={isInternalView ? 'Internal contractor analysis' : 'Owner-safe summary'}
+          eyebrow="โหมดการดูข้อมูล"
+          title={isInternalView ? 'บันทึกวิเคราะห์ภายใน' : 'สรุปสำหรับเจ้าของ'}
           action={
             <div className="flex rounded-xl border border-stone-200 bg-stone-100 p-1">
               {[
-                ['Owner View', false],
-                ['Internal View', true],
+                ['มุมมองเจ้าของ', false],
+                ['มุมมองภายใน', true],
               ].map(([label, value]) => (
                 <button
                   key={label}
@@ -507,7 +529,7 @@ function ProjectDetail({ project }) {
             <div className="space-y-5">
               <div>
                 <h3 className="text-sm font-semibold text-stone-950">
-                  Overpriced items
+                  รายการที่ควรตรวจราคา
                 </h3>
                 <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-600">
                   {project.internalNotes.overpricedItems.map((item) => (
@@ -519,16 +541,16 @@ function ProjectDetail({ project }) {
               </div>
               <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
                 <h3 className="text-sm font-semibold text-stone-950">
-                  Contractor analysis
+                  วิเคราะห์ผู้รับเหมา
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-stone-600">
                   {project.internalNotes.contractorAnalysis ||
-                    'Data pending review'}
+                    'รอตรวจสอบข้อมูล'}
                 </p>
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-stone-950">
-                  Negotiation notes
+                  บันทึกสำหรับต่อรอง
                 </h3>
                 <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-600">
                   {project.internalNotes.negotiationNotes.map((item) => (
@@ -542,7 +564,7 @@ function ProjectDetail({ project }) {
           ) : (
             <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
               <p className="text-base leading-7 text-stone-700">
-                {project.ownerSummary || 'Data pending review'}
+                {project.ownerSummary || 'รอตรวจสอบข้อมูล'}
               </p>
             </div>
           )}
