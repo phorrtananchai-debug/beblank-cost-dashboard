@@ -48,6 +48,11 @@ const hasProjectDetail = (project) =>
 const getChecklistLabel = (item) =>
   typeof item === 'string' ? item : item.label
 
+const getRevisionStatus = (project) =>
+  project.revision.toLowerCase().includes(project.status.toLowerCase())
+    ? project.revision
+    : `${project.revision} ${project.status}`
+
 function EmptyState() {
   return (
     <SectionCard eyebrow="Project Detail" title="Data pending review">
@@ -327,16 +332,16 @@ function ProjectDetail({ project }) {
               {project.projectName}
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-stone-600">
-              {project.revision} {project.status.toLowerCase()} turns the BOQ
-              into a concise owner decision view: what changed, where risk
-              remains, and what to negotiate next.
+              {getRevisionStatus(project)} turns the BOQ into a concise owner
+              decision view: what changed, where risk remains, and what to
+              negotiate next.
             </p>
           </div>
 
           <div className="grid gap-3 rounded-2xl border border-stone-200 bg-[#f7f5ef] p-4">
             {[
               ['Project Name', project.projectName],
-              ['Revision Status', `${project.revision} ${project.status}`],
+              ['Revision Status', getRevisionStatus(project)],
               ['Current Budget', formatMoney(project.currentBudget, true)],
               ['Previous Budget', formatMoney(project.previousBudget, true)],
               ['Budget Delta', formatMoney(project.deltaAmount, true)],

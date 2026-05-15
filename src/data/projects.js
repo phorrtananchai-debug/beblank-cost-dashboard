@@ -4,12 +4,12 @@ export const projects = [
     projectName: 'Karun Phuket Old Town',
     brand: 'Karun',
     branch: 'Phuket Old Town',
-    revision: 'REV01',
+    revision: 'REV01 Review',
     status: 'Review',
-    currentBudget: 7483632.5,
-    previousBudget: 7532450,
-    deltaAmount: -48817.5,
-    deltaPercent: -0.65,
+    currentBudget: 1320000,
+    previousBudget: 1397000,
+    deltaAmount: -77000,
+    deltaPercent: -5.5,
     lastUpdated: '15 May 2026',
     areaSqm: 420,
     scopeCompleteness: '82%',
@@ -17,19 +17,20 @@ export const projects = [
     ownerSupplyCount: 1,
     negotiationPriority: 'High',
     costBreakdown: [
-      { name: 'Architectural', value: 4862942.5, color: '#1c1917' },
-      { name: 'Electrical', value: 1064500, color: '#64748b' },
-      { name: 'AC', value: 836900, color: '#7c6f5f' },
-      { name: 'Water System', value: 719290, color: '#b08968' },
+      { name: 'Architectural Work', value: 670511, color: '#1c1917' },
+      { name: 'Electrical System', value: 300585, color: '#64748b' },
+      { name: 'Air Condition System', value: 260840, color: '#7c6f5f' },
+      { name: 'Water System', value: 40600, color: '#b08968' },
     ],
     revisionDelta: {
       items: [
-        { label: 'Architectural', value: -12967.5 },
-        { label: 'Electrical', value: -44550 },
-        { label: 'AC', value: -31900 },
+        { label: 'Architectural Work', value: -12967.5 },
+        { label: 'Electrical System', value: -44550 },
+        { label: 'Air Condition System', value: -31900 },
         { label: 'Water System', value: 40600 },
+        { label: 'Discount Increase', value: -21182.5 },
       ],
-      notes: ['Discount increased'],
+      notes: [],
     },
     risks: [
       {
@@ -68,7 +69,7 @@ export const projects = [
     ],
     ownerSupplyItems: ['Chandelier by owner'],
     ownerSummary:
-      'REV01 currently reduces the total budget while leaving several important exclusions visible. The owner decision should focus on confirming AC specification, water system detail, lighting level, and owner-supplied chandelier responsibility before final sign-off.',
+      'REV01 Review sets the current BOQ budget at THB 1,320,000, reduced by THB 77,000 from the previous issue. The owner decision should focus on confirming AC specification, water system detail, lighting level, and owner-supplied chandelier responsibility before final sign-off.',
     internalNotes: {
       overpricedItems: [
         'Water system increase needs itemized labor and equipment validation.',

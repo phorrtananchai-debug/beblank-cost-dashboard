@@ -70,6 +70,8 @@ function OwnerPresentation() {
   const getChecklistLabel = (item) =>
     typeof item === 'string' ? item : item.label
 
+  const revisionStatus = project.revision
+
   const hasDetail =
     typeof project.currentBudget === 'number' && project.costBreakdown.length > 0
 
@@ -152,7 +154,7 @@ function OwnerPresentation() {
             {[
               ['Brand', project.brand],
               ['Branch', project.branch],
-              ['Revision', `${project.revision} ${project.status}`],
+              ['Revision', revisionStatus],
               ['Status', project.status],
               ['Current Budget', formatMoney(project.currentBudget, true)],
               ['Previous Budget', formatMoney(project.previousBudget, true)],
