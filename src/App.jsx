@@ -4,21 +4,21 @@ import CostDashboard from './pages/CostDashboard.jsx'
 
 const navItems = [
   { to: '/', label: 'Home' },
-  { to: '/cost-dashboard', label: 'Cost Dashboard' },
+  { to: '/cost-dashboard', label: 'REV01 Review' },
 ]
 
 function App() {
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-950">
+    <div className="min-h-screen bg-[#f7f5ef] text-stone-950">
       <header className="border-b border-stone-200/80 bg-stone-50/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-8">
           <NavLink to="/" className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-lg border border-stone-200 bg-white text-sm font-semibold shadow-sm">
-              CD
+            <span className="grid h-9 w-9 place-items-center rounded-lg border border-stone-200 bg-white text-sm font-semibold shadow-sm shadow-stone-200/60">
+              KI
             </span>
             <div>
-              <p className="text-sm font-semibold leading-5">CostDesk</p>
-              <p className="text-xs text-stone-500">Spend intelligence</p>
+              <p className="text-sm font-semibold leading-5">Karun Intelligence</p>
+              <p className="text-xs text-stone-500">Architectural project review</p>
             </div>
           </NavLink>
 
