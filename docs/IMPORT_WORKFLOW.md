@@ -24,6 +24,8 @@ Before pasting it into the app, check:
 - `costBreakdown` totals are sensible against `currentBudget`.
 - `revisionDelta.items` clearly shows increases and reductions.
 - `risks` are owner-readable.
+- Set `risks[].ownerVisible` to `true` only for risks that can appear in the owner presentation.
+- Add owner-supplied fixtures, equipment, or materials to `ownerSupplyItems`.
 - `internalNotes` does not contain text you want visible in Owner View.
 
 ## 3. Add it to `src/data/projects.js`
@@ -71,4 +73,3 @@ Each project should include:
 - `negotiationChecklist`
 - `ownerSummary`
 - `internalNotes`
-

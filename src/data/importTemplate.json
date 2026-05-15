@@ -50,10 +50,12 @@
     {
       "title": "",
       "detail": "",
-      "level": ""
+      "level": "",
+      "ownerVisible": true
     }
   ],
   "negotiationChecklist": [],
+  "ownerSupplyItems": [],
   "ownerSummary": "",
   "internalNotes": {
     "overpricedItems": [],

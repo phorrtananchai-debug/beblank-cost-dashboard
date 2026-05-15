@@ -33,3 +33,28 @@ select,
 textarea {
   font: inherit;
 }
+
+@media print {
+  @page {
+    margin: 16mm;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  header,
+  .no-print {
+    display: none !important;
+  }
+
+  .owner-print-page {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .print-card {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}

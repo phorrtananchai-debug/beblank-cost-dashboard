@@ -26,9 +26,11 @@ export const boqProjectSchemaExample = {
       title: 'Risk title',
       detail: 'Owner-readable implication of the risk.',
       level: 'Scope gap | Hidden cost | Owner supply | External cost',
+      ownerVisible: true,
     },
   ],
   negotiationChecklist: ['Confirm item or specification'],
+  ownerSupplyItems: ['Owner supplied fixture or equipment'],
   ownerSummary: 'Plain-language owner summary suitable for client review.',
   internalNotes: {
     overpricedItems: ['Strategic pricing observation'],
@@ -46,4 +48,3 @@ export const aiImportMappingGuide = [
   'Put owner-safe explanations in ownerSummary and private strategy in internalNotes.',
   'Leave unknown fields as null, empty strings, or empty arrays so the UI can show Data pending review.',
 ]
-

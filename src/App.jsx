@@ -1,6 +1,7 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import CostDashboard from './pages/CostDashboard.jsx'
+import OwnerPresentation from './pages/OwnerPresentation.jsx'
 
 const navItems = [
   { to: '/', label: 'Home' },
@@ -47,6 +48,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cost-dashboard" element={<CostDashboard />} />
+          <Route path="/owner/:projectId" element={<OwnerPresentation />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

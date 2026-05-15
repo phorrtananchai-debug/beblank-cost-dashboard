@@ -36,23 +36,27 @@ export const projects = [
         title: 'PEA expansion excluded',
         detail: 'Potential authority-side expansion work is outside the current BOQ.',
         level: 'External cost',
+        ownerVisible: true,
       },
       {
         title: 'Communication main excluded',
         detail: 'Main communication line scope remains outside contractor pricing.',
         level: 'Scope gap',
+        ownerVisible: true,
       },
       {
         title: 'Chandelier by owner',
         detail:
           'Owner supply item should be tracked for procurement timing and install readiness.',
         level: 'Owner supply',
+        ownerVisible: true,
       },
       {
         title: 'Possible condenser support structure cost',
         detail:
           'AC support structure may require a separate allowance after site confirmation.',
         level: 'Hidden cost',
+        ownerVisible: true,
       },
     ],
     negotiationChecklist: [
@@ -62,6 +66,7 @@ export const projects = [
       'Confirm BTU performance',
       'Confirm owner supply items',
     ],
+    ownerSupplyItems: ['Chandelier by owner'],
     ownerSummary:
       'REV01 currently reduces the total budget while leaving several important exclusions visible. The owner decision should focus on confirming AC specification, water system detail, lighting level, and owner-supplied chandelier responsibility before final sign-off.',
     internalNotes: {
@@ -94,6 +99,7 @@ export const projects = [
     revisionDelta: { items: [], notes: [] },
     risks: [],
     negotiationChecklist: [],
+    ownerSupplyItems: [],
     ownerSummary: '',
     internalNotes: {
       overpricedItems: [],
@@ -117,6 +123,7 @@ export const projects = [
     revisionDelta: { items: [], notes: [] },
     risks: [],
     negotiationChecklist: [],
+    ownerSupplyItems: [],
     ownerSummary: '',
     internalNotes: {
       overpricedItems: [],
@@ -125,4 +132,3 @@ export const projects = [
     },
   },
 ]
-

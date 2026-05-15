@@ -14,6 +14,7 @@ const requiredProjectFields = [
   'revisionDelta',
   'risks',
   'negotiationChecklist',
+  'ownerSupplyItems',
   'ownerSummary',
   'internalNotes',
 ]
@@ -76,4 +77,3 @@ export function warnForInvalidProjects(projects) {
     console.warn('[BOQ import validation]', warnings)
   }
 }
-
