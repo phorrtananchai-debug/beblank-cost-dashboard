@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import DeltaRow from '../components/DeltaRow.jsx'
 import MetricCard from '../components/MetricCard.jsx'
 import RiskCard from '../components/RiskCard.jsx'
 import SectionCard from '../components/SectionCard.jsx'
-import { karunPhuketRev01 as data } from '../data/karunPhuketRev01.js'
+import { projects } from '../data/projects.js'
 
 const currency = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -19,55 +19,238 @@ const preciseCurrency = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 })
 
+const percentFormatter = new Intl.NumberFormat('en-US', {
+  maximumFractionDigits: 2,
+})
+
 const tooltipStyle = {
   border: '1px solid #e7e5e4',
   borderRadius: '12px',
   boxShadow: '0 18px 45px rgba(28, 25, 23, 0.08)',
 }
 
-function CostDashboard() {
+const formatMoney = (value, precise = false) => {
+  if (typeof value !== 'number') return 'Data pending review'
+  return precise ? preciseCurrency.format(value) : currency.format(value)
+}
+
+const hasProjectDetail = (project) =>
+  typeof project.currentBudget === 'number' &&
+  project.costBreakdown.length > 0 &&
+  project.revisionDelta.items.length > 0
+
+function EmptyState() {
+  return (
+    <SectionCard eyebrow="Project Detail" title="Data pending review">
+      <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
+        <p className="text-lg font-semibold text-stone-950">Data pending review</p>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-stone-500">
+          This project shell is ready for a future BOQ import. Once the budget,
+          cost categories, revision deltas, risks, and checklist are mapped into
+          the project schema, the full intelligence view will appear here.
+        </p>
+      </div>
+    </SectionCard>
+  )
+}
+
+function ProjectSelector({ selectedProjectId, onChange }) {
+  return (
+    <SectionCard>
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+            Project Library
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
+            BOQ intelligence system
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
+            Compare project health at portfolio level, then open a revision for
+            owner-safe decisions and internal negotiation strategy.
+          </p>
+        </div>
+
+        <label className="flex flex-col gap-2 text-sm font-medium text-stone-600">
+          Selected project
+          <select
+            value={selectedProjectId}
+            onChange={(event) => onChange(event.target.value)}
+            className="min-w-72 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-950 shadow-sm outline-none transition focus:border-stone-400"
+          >
+            {projects.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.projectName} {project.revision}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+    </SectionCard>
+  )
+}
+
+function ModeToggle({ mode, onChange }) {
+  return (
+    <div className="flex rounded-xl border border-stone-200 bg-stone-100 p-1">
+      {['Portfolio Overview', 'Project Detail'].map((label) => (
+        <button
+          key={label}
+          type="button"
+          onClick={() => onChange(label)}
+          className={[
+            'rounded-lg px-3 py-2 text-sm font-semibold transition',
+            mode === label
+              ? 'bg-white text-stone-950 shadow-sm'
+              : 'text-stone-500 hover:text-stone-950',
+          ].join(' ')}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function PortfolioOverview({ portfolio, selectedProjectId, onSelectProject }) {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <MetricCard label="Total Projects" value={portfolio.totalProjects} />
+        <MetricCard
+          label="Total Budget"
+          value={formatMoney(portfolio.totalBudget)}
+          detail="Projects with reviewed budget data"
+        />
+        <MetricCard
+          label="Avg. Cost / SQM"
+          value={formatMoney(portfolio.averageCostPerSqm)}
+          detail="Only projects with area data included"
+        />
+        <MetricCard
+          label="Highest Risk Project"
+          value={portfolio.highestRiskProject?.projectName ?? 'Data pending review'}
+          detail={portfolio.highestRiskProject?.hiddenCostRisk ?? 'No reviewed risk data'}
+          tone="risk"
+        />
+      </div>
+
+      <SectionCard eyebrow="Portfolio" title="Project cards">
+        <div className="grid gap-4 lg:grid-cols-3">
+          {projects.map((project) => {
+            const isSelected = project.id === selectedProjectId
+            const isPending = !hasProjectDetail(project)
+
+            return (
+              <button
+                key={project.id}
+                type="button"
+                onClick={() => onSelectProject(project.id)}
+                className={[
+                  'rounded-2xl border bg-stone-50 p-5 text-left transition hover:bg-white',
+                  isSelected
+                    ? 'border-stone-950 shadow-sm'
+                    : 'border-stone-200 hover:border-stone-300',
+                ].join(' ')}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
+                      {project.brand}
+                    </p>
+                    <h3 className="mt-2 text-lg font-semibold tracking-tight text-stone-950">
+                      {project.projectName}
+                    </h3>
+                  </div>
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-600">
+                    {project.revision}
+                  </span>
+                </div>
+                <div className="mt-5 space-y-2 text-sm">
+                  <div className="flex justify-between gap-3">
+                    <span className="text-stone-500">Status</span>
+                    <span className="font-medium text-stone-800">{project.status}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span className="text-stone-500">Budget</span>
+                    <span className="font-medium text-stone-800">
+                      {formatMoney(project.currentBudget)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span className="text-stone-500">Risk</span>
+                    <span className="font-medium text-stone-800">
+                      {isPending ? 'Data pending review' : project.hiddenCostRisk}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </SectionCard>
+    </div>
+  )
+}
+
+function ProjectDetail({ project }) {
   const [isInternalView, setIsInternalView] = useState(false)
-  const [checkedItems, setCheckedItems] = useState([0])
+  const [checkedItemsByProject, setCheckedItemsByProject] = useState({
+    [projects[0].id]: [0],
+  })
+
+  if (!hasProjectDetail(project)) {
+    return <EmptyState />
+  }
+
+  const checkedItems = checkedItemsByProject[project.id] ?? []
+  const costReduction =
+    typeof project.deltaAmount === 'number' && project.deltaAmount < 0
+      ? Math.abs(project.deltaAmount)
+      : 0
 
   const toggleChecklist = (index) => {
-    setCheckedItems((current) =>
-      current.includes(index)
-        ? current.filter((item) => item !== index)
-        : [...current, index],
-    )
+    setCheckedItemsByProject((current) => {
+      const projectCheckedItems = current[project.id] ?? []
+      const nextItems = projectCheckedItems.includes(index)
+        ? projectCheckedItems.filter((item) => item !== index)
+        : [...projectCheckedItems, index]
+
+      return { ...current, [project.id]: nextItems }
+    })
   }
 
   const metrics = [
     {
       label: 'Current Budget',
-      value: preciseCurrency.format(data.currentBudget),
-      detail: 'REV01 submitted budget',
+      value: formatMoney(project.currentBudget, true),
+      detail: `${project.revision} submitted budget`,
     },
     {
       label: 'Cost Reduction',
-      value: preciseCurrency.format(data.costReduction),
-      detail: 'Net decrease from previous issue',
+      value: formatMoney(costReduction, true),
+      detail: `${percentFormatter.format(Math.abs(project.deltaPercent ?? 0))}% from previous issue`,
       tone: 'positive',
     },
     {
       label: 'Scope Completeness',
-      value: data.scopeCompleteness,
+      value: project.scopeCompleteness ?? 'Data pending review',
       detail: 'Exclusions still require owner clarity',
     },
     {
       label: 'Hidden Cost Risk',
-      value: data.hiddenCostRisk,
+      value: project.hiddenCostRisk ?? 'Data pending review',
       detail: 'Driven by excluded utilities and support works',
       tone: 'risk',
     },
     {
       label: 'Owner Supply Count',
-      value: data.ownerSupplyCount,
-      detail: 'Chandelier requires tracking',
+      value: project.ownerSupplyCount ?? 'Data pending review',
+      detail: 'Owner-procured scope requiring tracking',
     },
     {
       label: 'Negotiation Priority',
-      value: data.negotiationPriority,
+      value: project.negotiationPriority ?? 'Data pending review',
       detail: 'Clarify scope before approval',
       tone: 'risk',
     },
@@ -81,22 +264,24 @@ function CostDashboard() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
               Architectural Project Intelligence
             </p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
-              {data.projectName}
-            </h1>
+            <h2 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
+              {project.projectName}
+            </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-stone-600">
-              {data.revisionStatus} turns the BOQ into a concise owner decision
-              view: what changed, where risk remains, and what to negotiate next.
+              {project.revision} {project.status.toLowerCase()} turns the BOQ
+              into a concise owner decision view: what changed, where risk
+              remains, and what to negotiate next.
             </p>
           </div>
 
           <div className="grid gap-3 rounded-2xl border border-stone-200 bg-[#f7f5ef] p-4">
             {[
-              ['Revision Status', data.revisionStatus],
-              ['Current Budget', preciseCurrency.format(data.currentBudget)],
-              ['Previous Budget', preciseCurrency.format(data.previousBudget)],
-              ['Budget Delta', preciseCurrency.format(data.budgetDelta)],
-              ['Last Updated', data.lastUpdated],
+              ['Project Name', project.projectName],
+              ['Revision Status', `${project.revision} ${project.status}`],
+              ['Current Budget', formatMoney(project.currentBudget, true)],
+              ['Previous Budget', formatMoney(project.previousBudget, true)],
+              ['Budget Delta', formatMoney(project.deltaAmount, true)],
+              ['Last Updated', project.lastUpdated ?? 'Data pending review'],
             ].map(([label, value]) => (
               <div
                 key={label}
@@ -121,7 +306,7 @@ function CostDashboard() {
       <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
         <SectionCard
           eyebrow="Cost Breakdown"
-          title="REV01 package allocation"
+          title={`${project.revision} package allocation`}
           action={
             <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
               THB
@@ -133,14 +318,14 @@ function CostDashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={data.costBreakdown}
+                    data={project.costBreakdown}
                     dataKey="value"
                     nameKey="name"
                     innerRadius="58%"
                     outerRadius="82%"
                     paddingAngle={3}
                   >
-                    {data.costBreakdown.map((item) => (
+                    {project.costBreakdown.map((item) => (
                       <Cell key={item.name} fill={item.color} />
                     ))}
                   </Pie>
@@ -153,7 +338,7 @@ function CostDashboard() {
             </div>
 
             <div className="space-y-3">
-              {data.costBreakdown.map((item) => (
+              {project.costBreakdown.map((item) => (
                 <div
                   key={item.name}
                   className="flex items-center justify-between gap-4 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3"
@@ -176,19 +361,21 @@ function CostDashboard() {
 
         <SectionCard eyebrow="Revision Delta" title="What moved from prior issue">
           <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4">
-            {data.deltas.map((delta) => (
+            {project.revisionDelta.items.map((delta) => (
               <DeltaRow key={delta.label} {...delta} />
             ))}
           </div>
-          <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
-            {data.revisionNotes.join(', ')}
-          </div>
+          {project.revisionDelta.notes.length > 0 && (
+            <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+              {project.revisionDelta.notes.join(', ')}
+            </div>
+          )}
         </SectionCard>
       </div>
 
       <SectionCard eyebrow="Risk Alerts" title="Owner clarity required">
         <div className="grid gap-4 md:grid-cols-2">
-          {data.risks.map((risk) => (
+          {project.risks.map((risk) => (
             <RiskCard key={risk.title} {...risk} />
           ))}
         </div>
@@ -197,7 +384,7 @@ function CostDashboard() {
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <SectionCard eyebrow="Negotiation Checklist" title="Next confirmations">
           <div className="space-y-3">
-            {data.checklist.map((item, index) => {
+            {project.negotiationChecklist.map((item, index) => {
               const isChecked = checkedItems.includes(index)
 
               return (
@@ -258,7 +445,7 @@ function CostDashboard() {
                   Overpriced items
                 </h3>
                 <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-600">
-                  {data.internal.overpricedItems.map((item) => (
+                  {project.internalNotes.overpricedItems.map((item) => (
                     <li key={item} className="rounded-xl bg-stone-50 px-4 py-3">
                       {item}
                     </li>
@@ -270,7 +457,8 @@ function CostDashboard() {
                   Contractor analysis
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-stone-600">
-                  {data.internal.contractorAnalysis}
+                  {project.internalNotes.contractorAnalysis ||
+                    'Data pending review'}
                 </p>
               </div>
               <div>
@@ -278,7 +466,7 @@ function CostDashboard() {
                   Negotiation notes
                 </h3>
                 <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-600">
-                  {data.internal.negotiationNotes.map((item) => (
+                  {project.internalNotes.negotiationNotes.map((item) => (
                     <li key={item} className="rounded-xl bg-stone-50 px-4 py-3">
                       {item}
                     </li>
@@ -289,15 +477,74 @@ function CostDashboard() {
           ) : (
             <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
               <p className="text-base leading-7 text-stone-700">
-                REV01 currently reduces the total budget while leaving several
-                important exclusions visible. The owner decision should focus on
-                confirming AC specification, water system detail, lighting level,
-                and owner-supplied chandelier responsibility before final sign-off.
+                {project.ownerSummary || 'Data pending review'}
               </p>
             </div>
           )}
         </SectionCard>
       </div>
+    </div>
+  )
+}
+
+function CostDashboard() {
+  const [selectedProjectId, setSelectedProjectId] = useState(projects[0].id)
+  const [mode, setMode] = useState('Portfolio Overview')
+  const selectedProject =
+    projects.find((project) => project.id === selectedProjectId) ?? projects[0]
+
+  const portfolio = useMemo(() => {
+    const reviewedProjects = projects.filter(
+      (project) => typeof project.currentBudget === 'number',
+    )
+    const projectsWithArea = reviewedProjects.filter(
+      (project) => typeof project.areaSqm === 'number' && project.areaSqm > 0,
+    )
+    const totalBudget = reviewedProjects.reduce(
+      (sum, project) => sum + project.currentBudget,
+      0,
+    )
+    const totalArea = projectsWithArea.reduce(
+      (sum, project) => sum + project.areaSqm,
+      0,
+    )
+
+    return {
+      totalProjects: projects.length,
+      totalBudget,
+      averageCostPerSqm: totalArea > 0 ? totalBudget / totalArea : null,
+      highestRiskProject:
+        reviewedProjects.find((project) => project.hiddenCostRisk === 'High') ??
+        reviewedProjects.find((project) => project.hiddenCostRisk === 'Medium') ??
+        reviewedProjects[0],
+    }
+  }, [])
+
+  const selectProject = (projectId) => {
+    setSelectedProjectId(projectId)
+    setMode('Project Detail')
+  }
+
+  return (
+    <div className="space-y-6">
+      <ProjectSelector
+        selectedProjectId={selectedProjectId}
+        onChange={setSelectedProjectId}
+      />
+
+      <div className="flex justify-start">
+        <ModeToggle mode={mode} onChange={setMode} />
+      </div>
+
+      {mode === 'Portfolio Overview' ? (
+        <PortfolioOverview
+          portfolio={portfolio}
+          selectedProjectId={selectedProjectId}
+          onSelectProject={selectProject}
+        />
+      ) : (
+        <ProjectDetail project={selectedProject} />
+      )}
     </div>
   )
 }

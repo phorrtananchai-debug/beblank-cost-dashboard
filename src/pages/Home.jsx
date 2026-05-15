@@ -27,12 +27,12 @@ function Home() {
             Architectural Project Intelligence
           </p>
           <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
-            Karun Phuket Old Town REV01, translated into owner-ready clarity.
+            BOQ revisions translated into owner-ready clarity.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 sm:text-lg">
             A lightweight BOQ intelligence view for understanding budget movement,
             exclusions, owner supply items, and negotiation priorities in under
-            thirty seconds.
+            thirty seconds, starting with Karun Phuket Old Town REV01.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link

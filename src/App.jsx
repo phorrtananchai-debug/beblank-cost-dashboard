@@ -14,10 +14,10 @@ function App() {
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-8">
           <NavLink to="/" className="flex items-center gap-3">
             <span className="grid h-9 w-9 place-items-center rounded-lg border border-stone-200 bg-white text-sm font-semibold shadow-sm shadow-stone-200/60">
-              KI
+              BI
             </span>
             <div>
-              <p className="text-sm font-semibold leading-5">Karun Intelligence</p>
+              <p className="text-sm font-semibold leading-5">BOQ Intelligence</p>
               <p className="text-xs text-stone-500">Architectural project review</p>
             </div>
           </NavLink>
