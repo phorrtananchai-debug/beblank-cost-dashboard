@@ -45,6 +45,9 @@ const hasProjectDetail = (project) =>
   project.costBreakdown.length > 0 &&
   project.revisionDelta.items.length > 0
 
+const getChecklistLabel = (item) =>
+  typeof item === 'string' ? item : item.label
+
 function EmptyState() {
   return (
     <SectionCard eyebrow="Project Detail" title="Data pending review">
@@ -442,10 +445,11 @@ function ProjectDetail({ project }) {
           <div className="space-y-3">
             {project.negotiationChecklist.map((item, index) => {
               const isChecked = checkedItems.includes(index)
+              const label = getChecklistLabel(item)
 
               return (
                 <label
-                  key={item}
+                  key={label}
                   className="flex cursor-pointer items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 transition hover:bg-stone-100"
                 >
                   <input
@@ -460,7 +464,7 @@ function ProjectDetail({ project }) {
                       isChecked ? 'text-stone-400 line-through' : 'text-stone-800',
                     ].join(' ')}
                   >
-                    {item}
+                    {label}
                   </span>
                 </label>
               )

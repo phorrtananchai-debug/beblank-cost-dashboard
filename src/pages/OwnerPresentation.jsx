@@ -33,6 +33,7 @@ const formatMoney = (value, precise = false) => {
 function OwnerPresentation() {
   const { projectId } = useParams()
   const [copyLabel, setCopyLabel] = useState('Copy owner summary')
+  const [shareLabel, setShareLabel] = useState('Copy share message')
   const project = projects.find((item) => item.id === projectId)
 
   const ownerRisks = useMemo(
@@ -40,11 +41,19 @@ function OwnerPresentation() {
     [project],
   )
 
+  const ownerChecklist = useMemo(
+    () =>
+      project?.negotiationChecklist.filter((item) =>
+        typeof item === 'string' ? true : item.ownerVisible,
+      ) ?? [],
+    [project],
+  )
+
   if (!project) {
     return (
-      <div className="owner-print-page mx-auto max-w-5xl">
-        <SectionCard title="Project not found">
-          <p className="text-sm text-stone-600">
+      <div className="owner-print-page mx-auto max-w-4xl">
+        <SectionCard className="print-card" title="Project not found">
+          <p className="text-sm leading-6 text-stone-600">
             This owner presentation link does not match an available project.
           </p>
           <Link
@@ -58,8 +67,22 @@ function OwnerPresentation() {
     )
   }
 
+  const getChecklistLabel = (item) =>
+    typeof item === 'string' ? item : item.label
+
   const hasDetail =
     typeof project.currentBudget === 'number' && project.costBreakdown.length > 0
+
+  const copyToClipboard = async (text, setLabel, successLabel, defaultLabel) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setLabel(successLabel)
+      window.setTimeout(() => setLabel(defaultLabel), 1800)
+    } catch {
+      setLabel('Copy unavailable')
+      window.setTimeout(() => setLabel(defaultLabel), 1800)
+    }
+  }
 
   const copyOwnerSummary = async () => {
     const summary = [
@@ -69,18 +92,17 @@ function OwnerPresentation() {
       project.ownerSummary || 'Data pending review',
     ].join('\n')
 
-    try {
-      await navigator.clipboard.writeText(summary)
-      setCopyLabel('Copied')
-      window.setTimeout(() => setCopyLabel('Copy owner summary'), 1800)
-    } catch {
-      setCopyLabel('Copy unavailable')
-      window.setTimeout(() => setCopyLabel('Copy owner summary'), 1800)
-    }
+    await copyToClipboard(summary, setCopyLabel, 'Copied', 'Copy owner summary')
+  }
+
+  const copyShareMessage = async () => {
+    const message = `Please review the BOQ summary for ${project.projectName}. This page highlights the current budget, key revision changes, cost risks, and owner decisions required.`
+
+    await copyToClipboard(message, setShareLabel, 'Copied', 'Copy share message')
   }
 
   return (
-    <div className="owner-print-page mx-auto max-w-6xl space-y-6 bg-white text-stone-950 sm:rounded-3xl sm:border sm:border-stone-200 sm:p-8 sm:shadow-sm sm:shadow-stone-200/60">
+    <div className="owner-print-page mx-auto max-w-6xl space-y-6 bg-white text-stone-950 sm:p-8">
       <div className="no-print flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <Link
           to="/cost-dashboard"
@@ -95,6 +117,13 @@ function OwnerPresentation() {
             className="rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 shadow-sm transition hover:bg-stone-100"
           >
             {copyLabel}
+          </button>
+          <button
+            type="button"
+            onClick={copyShareMessage}
+            className="rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 shadow-sm transition hover:bg-stone-100"
+          >
+            {shareLabel}
           </button>
           <button
             type="button"
@@ -121,7 +150,10 @@ function OwnerPresentation() {
           </div>
           <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4">
             {[
+              ['Brand', project.brand],
+              ['Branch', project.branch],
               ['Revision', `${project.revision} ${project.status}`],
+              ['Status', project.status],
               ['Current Budget', formatMoney(project.currentBudget, true)],
               ['Previous Budget', formatMoney(project.previousBudget, true)],
               ['Budget Delta', formatMoney(project.deltaAmount, true)],
@@ -150,7 +182,7 @@ function OwnerPresentation() {
         </SectionCard>
       ) : (
         <>
-          <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="print-grid grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <SectionCard
               className="print-card"
               eyebrow="Revision Delta"
@@ -234,11 +266,11 @@ function OwnerPresentation() {
           <div className="grid gap-6 lg:grid-cols-2">
             <SectionCard
               className="print-card"
-              eyebrow="Required Owner Decisions"
-              title="Decision checklist"
+              eyebrow="Owner Decisions Required"
+              title="Confirm before approval"
             >
               <ul className="space-y-3">
-                {project.negotiationChecklist.map((item) => (
+                {[...ownerChecklist.map(getChecklistLabel), ...project.ownerSupplyItems].map((item) => (
                   <li
                     key={item}
                     className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-medium text-stone-700"
@@ -272,6 +304,10 @@ function OwnerPresentation() {
           </div>
         </>
       )}
+
+      <footer className="print-card border-t border-stone-200 pt-5 text-center text-xs font-medium text-stone-400">
+        Prepared by Be Blank to Behind Studio
+      </footer>
     </div>
   )
 }

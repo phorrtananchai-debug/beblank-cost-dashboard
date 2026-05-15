@@ -36,25 +36,43 @@ textarea {
 
 @media print {
   @page {
-    margin: 16mm;
+    margin: 14mm;
+    size: A4;
   }
 
+  html,
   body {
     background: #ffffff;
+    color: #1c1917;
   }
 
   header,
-  .no-print {
+  .no-print,
+  button {
     display: none !important;
   }
 
   .owner-print-page {
     max-width: none !important;
     padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
   }
 
   .print-card {
+    border-color: #d6d3d1 !important;
     break-inside: avoid;
+    page-break-inside: avoid;
     box-shadow: none !important;
+  }
+
+  .print-grid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-break-before {
+    break-before: page;
+    page-break-before: always;
   }
 }

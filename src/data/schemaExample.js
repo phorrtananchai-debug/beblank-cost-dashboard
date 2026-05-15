@@ -29,7 +29,7 @@ export const boqProjectSchemaExample = {
       ownerVisible: true,
     },
   ],
-  negotiationChecklist: ['Confirm item or specification'],
+  negotiationChecklist: [{ label: 'Confirm item or specification', ownerVisible: true }],
   ownerSupplyItems: ['Owner supplied fixture or equipment'],
   ownerSummary: 'Plain-language owner summary suitable for client review.',
   internalNotes: {

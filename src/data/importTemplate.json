@@ -54,7 +54,12 @@
       "ownerVisible": true
     }
   ],
-  "negotiationChecklist": [],
+  "negotiationChecklist": [
+    {
+      "label": "",
+      "ownerVisible": true
+    }
+  ],
   "ownerSupplyItems": [],
   "ownerSummary": "",
   "internalNotes": {

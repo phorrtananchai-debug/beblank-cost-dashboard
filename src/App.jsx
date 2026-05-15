@@ -1,4 +1,4 @@
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
+import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import CostDashboard from './pages/CostDashboard.jsx'
 import OwnerPresentation from './pages/OwnerPresentation.jsx'
@@ -9,9 +9,22 @@ const navItems = [
 ]
 
 function App() {
+  const location = useLocation()
+  const isOwnerPage = location.pathname.startsWith('/owner/')
+
   return (
-    <div className="min-h-screen bg-[#f7f5ef] text-stone-950">
-      <header className="border-b border-stone-200/80 bg-stone-50/90 backdrop-blur">
+    <div
+      className={[
+        'min-h-screen text-stone-950',
+        isOwnerPage ? 'bg-white' : 'bg-[#f7f5ef]',
+      ].join(' ')}
+    >
+      <header
+        className={[
+          'border-b border-stone-200/80 bg-stone-50/90 backdrop-blur',
+          isOwnerPage ? 'hidden' : '',
+        ].join(' ')}
+      >
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-8">
           <NavLink to="/" className="flex items-center gap-3">
             <span className="grid h-9 w-9 place-items-center rounded-lg border border-stone-200 bg-white text-sm font-semibold shadow-sm shadow-stone-200/60">
@@ -44,7 +57,12 @@ function App() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl px-5 py-6 sm:py-8 lg:px-8">
+      <main
+        className={[
+          'mx-auto w-full px-5 py-6 sm:py-8 lg:px-8',
+          isOwnerPage ? 'max-w-none bg-white' : 'max-w-7xl',
+        ].join(' ')}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cost-dashboard" element={<CostDashboard />} />

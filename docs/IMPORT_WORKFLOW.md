@@ -25,6 +25,7 @@ Before pasting it into the app, check:
 - `revisionDelta.items` clearly shows increases and reductions.
 - `risks` are owner-readable.
 - Set `risks[].ownerVisible` to `true` only for risks that can appear in the owner presentation.
+- Set `negotiationChecklist[].ownerVisible` to `true` only for checklist items that can appear in the owner presentation.
 - Add owner-supplied fixtures, equipment, or materials to `ownerSupplyItems`.
 - `internalNotes` does not contain text you want visible in Owner View.
 

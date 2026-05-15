@@ -60,11 +60,11 @@ export const projects = [
       },
     ],
     negotiationChecklist: [
-      'Confirm AC model/spec',
-      'Request water system breakdown',
-      'Confirm Lux level',
-      'Confirm BTU performance',
-      'Confirm owner supply items',
+      { label: 'Confirm AC model/spec', ownerVisible: true },
+      { label: 'Request water system breakdown', ownerVisible: true },
+      { label: 'Confirm Lux level', ownerVisible: true },
+      { label: 'Confirm BTU performance', ownerVisible: true },
+      { label: 'Confirm owner supply items', ownerVisible: true },
     ],
     ownerSupplyItems: ['Chandelier by owner'],
     ownerSummary:
