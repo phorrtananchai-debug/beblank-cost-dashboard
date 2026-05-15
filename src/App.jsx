@@ -6,15 +6,15 @@ const CostDashboard = lazy(() => import('./pages/CostDashboard.jsx'))
 const OwnerPresentation = lazy(() => import('./pages/OwnerPresentation.jsx'))
 
 const navItems = [
-  { to: '/', label: 'Home' },
-  { to: '/cost-dashboard', label: 'REV01 Review' },
+  { to: '/', label: 'หน้าแรก' },
+  { to: '/cost-dashboard', label: 'รีวิว REV01' },
 ]
 
 function LoadingPage() {
   return (
     <div className="grid min-h-[50vh] place-items-center">
       <div className="rounded-2xl border border-stone-200 bg-white px-5 py-4 text-sm font-medium text-stone-500 shadow-sm shadow-stone-200/60">
-        Loading dashboard
+        กำลังโหลดแดชบอร์ด
       </div>
     </div>
   )
@@ -43,8 +43,10 @@ function App() {
               BI
             </span>
             <div>
-              <p className="text-sm font-semibold leading-5">BOQ Intelligence</p>
-              <p className="text-xs text-stone-500">Architectural project review</p>
+              <p className="text-sm font-semibold leading-5">ระบบวิเคราะห์ BOQ</p>
+              <p className="text-xs text-stone-500">
+                สรุปต้นทุนและความเสี่ยงโครงการ
+              </p>
             </div>
           </NavLink>
 

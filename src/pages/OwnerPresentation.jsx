@@ -26,14 +26,14 @@ const tooltipStyle = {
 }
 
 const formatMoney = (value, precise = false) => {
-  if (typeof value !== 'number') return 'Data pending review'
+  if (typeof value !== 'number') return 'รอตรวจสอบข้อมูล'
   return precise ? preciseCurrency.format(value) : currency.format(value)
 }
 
 function OwnerPresentation() {
   const { projectId } = useParams()
-  const [copyLabel, setCopyLabel] = useState('Copy owner summary')
-  const [shareLabel, setShareLabel] = useState('Copy share message')
+  const [copyLabel, setCopyLabel] = useState('คัดลอกสรุปสำหรับเจ้าของ')
+  const [shareLabel, setShareLabel] = useState('คัดลอกข้อความแชร์')
   const project = projects.find((item) => item.id === projectId)
 
   const ownerRisks = useMemo(
@@ -52,15 +52,15 @@ function OwnerPresentation() {
   if (!project) {
     return (
       <div className="owner-print-page mx-auto max-w-4xl">
-        <SectionCard className="print-card" title="Project not found">
+        <SectionCard className="print-card" title="ไม่พบโครงการ">
           <p className="text-sm leading-6 text-stone-600">
-            This owner presentation link does not match an available project.
+            ลิงก์นี้ไม่ตรงกับโครงการที่มีอยู่ในระบบ
           </p>
           <Link
             to="/cost-dashboard"
             className="no-print mt-5 inline-flex rounded-lg bg-stone-950 px-4 py-2.5 text-sm font-semibold text-white"
           >
-            Back to dashboard
+            กลับไปที่แดชบอร์ด
           </Link>
         </SectionCard>
       </div>
@@ -69,6 +69,8 @@ function OwnerPresentation() {
 
   const getChecklistLabel = (item) =>
     typeof item === 'string' ? item : item.label
+
+  const revisionStatus = project.revision
 
   const hasDetail =
     typeof project.currentBudget === 'number' && project.costBreakdown.length > 0
@@ -79,7 +81,7 @@ function OwnerPresentation() {
       setLabel(successLabel)
       window.setTimeout(() => setLabel(defaultLabel), 1800)
     } catch {
-      setLabel('Copy unavailable')
+      setLabel('คัดลอกไม่ได้')
       window.setTimeout(() => setLabel(defaultLabel), 1800)
     }
   }
@@ -87,18 +89,28 @@ function OwnerPresentation() {
   const copyOwnerSummary = async () => {
     const summary = [
       `${project.projectName} ${project.revision}`,
-      `Current budget: ${formatMoney(project.currentBudget, true)}`,
-      `Budget delta: ${formatMoney(project.deltaAmount, true)}`,
-      project.ownerSummary || 'Data pending review',
+      `งบประมาณปัจจุบัน: ${formatMoney(project.currentBudget, true)}`,
+      `ส่วนต่างงบ: ${formatMoney(project.deltaAmount, true)}`,
+      project.ownerSummary || 'รอตรวจสอบข้อมูล',
     ].join('\n')
 
-    await copyToClipboard(summary, setCopyLabel, 'Copied', 'Copy owner summary')
+    await copyToClipboard(
+      summary,
+      setCopyLabel,
+      'คัดลอกแล้ว',
+      'คัดลอกสรุปสำหรับเจ้าของ',
+    )
   }
 
   const copyShareMessage = async () => {
-    const message = `Please review the BOQ summary for ${project.projectName}. This page highlights the current budget, key revision changes, cost risks, and owner decisions required.`
+    const message = `โปรดตรวจสอบสรุป BOQ สำหรับ ${project.projectName} หน้านี้สรุปงบประมาณปัจจุบัน การเปลี่ยนแปลงสำคัญ ความเสี่ยงด้านต้นทุน และสิ่งที่เจ้าของต้องตัดสินใจก่อนอนุมัติ`
 
-    await copyToClipboard(message, setShareLabel, 'Copied', 'Copy share message')
+    await copyToClipboard(
+      message,
+      setShareLabel,
+      'คัดลอกแล้ว',
+      'คัดลอกข้อความแชร์',
+    )
   }
 
   return (
@@ -108,7 +120,7 @@ function OwnerPresentation() {
           to="/cost-dashboard"
           className="text-sm font-semibold text-stone-500 transition hover:text-stone-950"
         >
-          Back to dashboard
+          กลับไปที่แดชบอร์ด
         </Link>
         <div className="flex flex-col gap-2 sm:flex-row">
           <button
@@ -130,14 +142,14 @@ function OwnerPresentation() {
             onClick={() => window.print()}
             className="rounded-xl bg-stone-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-800"
           >
-            Print / Save as PDF
+            พิมพ์ / บันทึกเป็น PDF
           </button>
         </div>
       </div>
 
       <section className="print-card rounded-3xl border border-stone-200 bg-[#fbfaf7] p-6 sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-          Owner Presentation
+          สรุปสำหรับเจ้าของโครงการ
         </p>
         <div className="mt-5 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
@@ -145,19 +157,22 @@ function OwnerPresentation() {
               {project.projectName}
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-stone-600">
-              {project.ownerSummary || 'Data pending review'}
+              {project.ownerSummary || 'รอตรวจสอบข้อมูล'}
             </p>
           </div>
           <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4">
             {[
-              ['Brand', project.brand],
-              ['Branch', project.branch],
-              ['Revision', `${project.revision} ${project.status}`],
-              ['Status', project.status],
-              ['Current Budget', formatMoney(project.currentBudget, true)],
-              ['Previous Budget', formatMoney(project.previousBudget, true)],
-              ['Budget Delta', formatMoney(project.deltaAmount, true)],
-              ['Last Updated', project.lastUpdated ?? 'Data pending review'],
+              ['แบรนด์', project.brand],
+              ['สาขา', project.branch],
+              ['รอบรีวิว', revisionStatus],
+              [
+                'สถานะ',
+                project.status === 'Review' ? 'กำลังรีวิว' : project.status,
+              ],
+              ['งบประมาณปัจจุบัน', formatMoney(project.currentBudget, true)],
+              ['งบประมาณรอบก่อน', formatMoney(project.previousBudget, true)],
+              ['ส่วนต่างงบ', formatMoney(project.deltaAmount, true)],
+              ['อัปเดตล่าสุด', project.lastUpdated ?? 'รอตรวจสอบข้อมูล'],
             ].map(([label, value]) => (
               <div
                 key={label}
@@ -174,10 +189,9 @@ function OwnerPresentation() {
       </section>
 
       {!hasDetail ? (
-        <SectionCard className="print-card" title="Data pending review">
+        <SectionCard className="print-card" title="รอตรวจสอบข้อมูล">
           <p className="text-sm leading-6 text-stone-600">
-            This project is ready for an owner presentation once reviewed BOQ data
-            is added.
+            โครงการนี้จะแสดงสรุปสำหรับเจ้าของได้เมื่อเพิ่มข้อมูล BOQ ที่ผ่านการตรวจสอบแล้ว
           </p>
         </SectionCard>
       ) : (
@@ -185,8 +199,8 @@ function OwnerPresentation() {
           <div className="print-grid grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <SectionCard
               className="print-card"
-              eyebrow="Revision Delta"
-              title="Budget movement"
+              eyebrow="ส่วนต่างรอบรีวิว"
+              title="การเปลี่ยนแปลงงบประมาณ"
             >
               <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4">
                 {project.revisionDelta.items.map((delta) => (
@@ -202,8 +216,8 @@ function OwnerPresentation() {
 
             <SectionCard
               className="print-card"
-              eyebrow="Cost Breakdown"
-              title="Package allocation"
+              eyebrow="แยกหมวดต้นทุน"
+              title="สัดส่วนงบประมาณ"
             >
               <div className="grid gap-5 sm:grid-cols-[0.9fr_1.1fr] sm:items-center">
                 <div className="h-64">
@@ -253,8 +267,8 @@ function OwnerPresentation() {
 
           <SectionCard
             className="print-card"
-            eyebrow="Owner Risks"
-            title="Items to confirm before approval"
+            eyebrow="ความเสี่ยงสำหรับเจ้าของ"
+            title="ประเด็นที่ควรยืนยันก่อนอนุมัติ"
           >
             <div className="grid gap-4 md:grid-cols-2">
               {ownerRisks.map((risk) => (
@@ -266,8 +280,8 @@ function OwnerPresentation() {
           <div className="grid gap-6 lg:grid-cols-2">
             <SectionCard
               className="print-card"
-              eyebrow="Owner Decisions Required"
-              title="Confirm before approval"
+              eyebrow="สิ่งที่เจ้าของต้องตัดสินใจ"
+              title="ยืนยันก่อนอนุมัติ"
             >
               <ul className="space-y-3">
                 {[...ownerChecklist.map(getChecklistLabel), ...project.ownerSupplyItems].map((item) => (
@@ -283,8 +297,8 @@ function OwnerPresentation() {
 
             <SectionCard
               className="print-card"
-              eyebrow="Owner Supply Items"
-              title="Provided by owner"
+              eyebrow="รายการที่เจ้าของจัดหา"
+              title="จัดหาโดยเจ้าของ"
             >
               {project.ownerSupplyItems.length > 0 ? (
                 <ul className="space-y-3">
@@ -298,7 +312,7 @@ function OwnerPresentation() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-stone-500">Data pending review</p>
+                <p className="text-sm text-stone-500">รอตรวจสอบข้อมูล</p>
               )}
             </SectionCard>
           </div>
@@ -306,7 +320,7 @@ function OwnerPresentation() {
       )}
 
       <footer className="print-card border-t border-stone-200 pt-5 text-center text-xs font-medium text-stone-400">
-        Prepared by Be Blank to Behind Studio
+        จัดทำโดย Be Blank to Behind Studio
       </footer>
     </div>
   )

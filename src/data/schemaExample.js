@@ -40,11 +40,11 @@ export const boqProjectSchemaExample = {
 }
 
 export const aiImportMappingGuide = [
-  'Use one object per BOQ or quotation revision.',
-  'Normalize monetary values as numbers without commas or currency symbols.',
-  'Map headline project identity into id, projectName, brand, branch, and revision.',
-  'Map package totals into costBreakdown using stable category names.',
-  'Map revision movement by category into revisionDelta.items with negative values for reductions.',
-  'Put owner-safe explanations in ownerSummary and private strategy in internalNotes.',
-  'Leave unknown fields as null, empty strings, or empty arrays so the UI can show Data pending review.',
+  'ใช้หนึ่ง object ต่อหนึ่งรอบ BOQ หรือ quotation',
+  'กรอกตัวเลขเป็น number เท่านั้น ไม่ใส่ comma หรือสัญลักษณ์สกุลเงิน',
+  'แยกข้อมูลโครงการหลักเป็น id, projectName, brand, branch และ revision',
+  'นำยอดรวมแต่ละหมวดใส่ใน costBreakdown โดยใช้ชื่อหมวดให้สม่ำเสมอ',
+  'ใส่ส่วนต่างจากรอบก่อนใน revisionDelta.items โดยค่าลดลงให้เป็นตัวเลขติดลบ',
+  'ใส่ข้อความที่เจ้าของอ่านได้ใน ownerSummary และกลยุทธ์ภายในใน internalNotes',
+  'ถ้ายังไม่ทราบข้อมูล ให้ใช้ null, empty string หรือ empty array เพื่อให้ระบบแสดงรอตรวจสอบข้อมูล',
 ]
